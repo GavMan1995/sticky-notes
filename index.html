@@ -1,0 +1,95 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.5/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+    <link rel='stylesheet' href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id='content' class='container'>
+    </div>
+    <script type='text/babel'>
+      class List extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {notes: [], nextID: 0};
+          this.addNote = this.addNote.bind(this);
+          this.notes = this.notes.bind(this);
+          // this.deleteNote = this.deleteNote.bind(this);
+        }
+
+        addNote(e) {
+          e.preventDefault();
+          let notes = this.state.notes;
+          notes.unshift({
+            name: this.refs.name.value,
+            id: this.state.nextID
+          });
+          this.refs.name.value = null;
+          this.setState({notes: notes, nextID: this.incID(this.state.nextID) });
+        }
+
+        incID(id){
+          return id += 1;
+        }
+
+        notes() {
+          let notes = [];
+          this.state.notes.map( note => {
+            notes.push(
+              <Note key={`note-${note.id}`} {...note}/>
+            );
+          });
+          return notes;
+        }
+
+        render() {
+          return(
+            <div>
+              <div className='center z-depth-2 blue lighten-5 row'>
+                  <h1>Sticky Notes</h1>
+                  <form onSubmit={this.addNote} className=" col s6 offset-s3">
+                    <input id="name" placeholder="add sticky note" type="text" ref="name" />
+                    <input type="submit" className='btn green lighten-3'/>
+                  </form>
+              </div>
+              <div className="row">
+                {this.notes()}
+              </div>
+            </div>
+          );
+        }
+      }
+
+      class Note extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state
+        }
+
+        render(){
+          return(
+            <div className="yellow lighten-4 col s12 m4 offset-m1 sticky z-depth-3 center-align">
+              <h4>{this.props.name}</h4>
+              <hr/>
+              <div>
+                <a style={{cursor: "pointer"}}>Delete </a>
+                <a style={{cursor: "pointer"}}> Edit</a>
+              </div>
+            </div>
+          );
+        }
+
+      }
+
+      ReactDOM.render(<List />, document.getElementById('content'));
+    </script>
+  </body>
+</html>
